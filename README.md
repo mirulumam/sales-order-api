@@ -5,7 +5,7 @@
 - MySQL 8+ atau MariaDB 10.6+
 
 ### Instalasi
-- Clone: https://github.com/mirulumam/sales-order-api.git
+- Clone: `https://github.com/mirulumam/sales-order-api.git`
 - Buka terminal, arahkan active directory ke folder repo di atas
 - Instal dependencies composer: `composer install`
 - Salin atau _rename_ file `.env.example` ke `.env`
