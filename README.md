@@ -1,58 +1,43 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Cara Install
+### Prasyarat
+- PHP >= 8.2 dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`
+- Composer >= 2
+- MySQL 8+ atau MariaDB 10.6+
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Instalasi
+- Clone: https://github.com/mirulumam/sales-order-api.git
+- Buka terminal, arahkan active directory ke folder repo di atas
+- Instal dependencies composer: `composer install`
+- Salin atau _rename_ file `.env.example` ke `.env`
+- Sesuaikan konfigurasi databse di file `.env`:
+  - DB_CONNECTION=\<db_type>
+  - DB_HOST=\<db_host>
+  - DB_PORT=\<db_connection_port>
+  - DB_DATABASE=\<db_name>
+  - DB_USERNAME=\<db_user>
+  - DB_PASSWORD=\<db_password>
+- Generate _app key_: `php artisan key:generate`
+- Jalankan migrasi: `php artisan migrate`
+- Jalankan seeder (untuk mengisi data ke db): `php artisan db:seed`
 
-## About Laravel
+## Running Project
+### Local
+- Untuk menjalankan project di local, gunakan command: `php artisan serve`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Deploy ke Server
+- Siapkan server dengan root directory atur ke directory `public`
+- Jalankan langkah-langkah `Instalasi` di atas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Dokumentasi API
+- [Sales API.postman_collection.json](https://github.com/mirulumam/sales-order-api/blob/master/Sales%20API.postman_collection.json)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Desain Aplikasi
+- API memungkinkan _user_ menggunakan aplikasi dengan metode _multi-session_ yang artinya _user_ dapat _login_ dibeberapa perangkat sekaligus dengan _session_ yang berbeda dan punya _session expiration_-nya masing-masing.
+- Backend tidak menyimpan _session token_ (JWT). Setiap _request_ yang diterima akan divalidasi dengan _verification signature_ menggunakan `JWT_SECRET` yang ada pada `.env`
+- Struktur utama API:
+  - Model, dibagi menjadi 3:
+    - Data model - /app/Models
+    - Request - /app/Http/Requests
+    - Response - /app/Http/Resources
+  - Controller - /app/Http/Controllers/Api
+  - Services, _bussiness logic_ - /app/Services
