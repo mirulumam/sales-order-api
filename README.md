@@ -31,6 +31,207 @@
 ## Dokumentasi API
 - [Sales API.postman_collection.json](https://github.com/mirulumam/sales-order-api/blob/master/Sales%20API.postman_collection.json)
 
+#### `POST /api/auth/login`
+Login dan dapatkan Bearer token.
+
+**Request Body:**
+```json
+{
+  "username": "sales01",
+  "password": "password"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "success": true,
+  "message": "Login berhasil.",
+  "data": {
+    "token": "1|abc123...",
+    "token_type": "Bearer",
+    "user": { "id": 2, "username": "sales01", "role": "user" }
+  }
+}
+```
+
+**Response `401`:**
+```json
+{ "success": false, "message": "Username atau password salah." }
+```
+
+---
+
+#### `POST /api/auth/logout`
+Logout.
+
+#### `GET /api/auth/profile`
+Menampilkan data user yang sedang login.
+
+---
+
+### Products
+
+#### `GET /api/products`
+Daftar produk dengan pagination.
+
+**Query Params:**
+| Param    | Type   | Default | Keterangan              |
+|----------|--------|---------|-------------------------|
+| per_page | int    | 15      | Jumlah item per halaman |
+| search   | string | –       | Filter nama produk      |
+
+**Response `200`:**
+```json
+{
+  "success": true,
+  "data": [
+    { "id": 1, "name": "Laptop ASUS VivoBook 14", "price": 7500000, "stock": 20, "created_at": "..." }
+  ],
+  "meta": { "current_page": 1, "last_page": 1, "per_page": 15, "total": 8 }
+}
+```
+
+#### `GET /api/products/{id}`
+Detail satu produk.
+
+---
+
+### Customers
+
+#### `GET /api/customers`
+Daftar customer dengan pagination.
+
+**Query Params:**
+| Param    | Type   | Default | Keterangan                       |
+|----------|--------|---------|----------------------------------|
+| per_page | int    | 15      | Jumlah item per halaman          |
+| search   | string | –       | Filter nama atau nomor telepon   |
+
+#### `GET /api/customers/{id}`
+Detail satu customer.
+
+---
+
+### Orders
+
+#### `GET /api/orders`
+Daftar order dengan pagination.
+
+**Query Params:**
+| Param    | Type                           | Default | Keterangan              |
+|----------|--------------------------------|---------|-------------------------|
+| per_page | int                            | 15      | Jumlah item per halaman |
+| status   | 1 / 2 / 3                      | –       | Filter by status        |
+1. Draft
+2. Submitted
+3. Cancelled
+
+#### `GET /api/orders/{id}`
+Detail order beserta seluruh item dan info produk.
+
+---
+
+#### `POST /api/orders`
+Membuat order baru dengan status **Draft**.
+
+> Stok belum dikurangi pada tahap ini.
+
+**Request Body:**
+```json
+{
+  "customer_id": 1,
+  "items": [
+    { "product_id": 1, "qty": 2 },
+    { "product_id": 2, "qty": 5 }
+  ]
+}
+```
+
+**Response `201`:**
+```json
+{
+  "success": true,
+  "message": "Order draft berhasil dibuat.",
+  "data": {
+    "id": 1,
+    "order_no": "ORD-20240115-0001",
+    "status": "Draft",
+    "total_amount": 16250000,
+    "customer": { "id": 1, "name": "PT Maju Bersama", ... },
+    "items": [
+      { "id": 1, "product": { ... }, "qty": 2, "price": 7500000, "subtotal": 15000000 },
+      { "id": 2, "product": { ... }, "qty": 5, "price":  250000, "subtotal":  1250000 }
+    ],
+    ...
+  }
+}
+```
+
+**Response `422` (validasi gagal):**
+```json
+{
+  "success": false,
+  "message": "Data yang dikirim tidak valid.",
+  "errors": {
+    "customer_id": ["Customer tidak ditemukan."],
+    "items.0.qty": ["Qty setiap item harus lebih besar dari 0."]
+  }
+}
+```
+
+---
+
+#### `PATCH /api/orders/{id}/submit`
+Submit order dari status **Draft** → **Submitted**.
+
+> Stok dikurangi di sini. Proses dibungkus dalam **database transaction** dengan `SELECT ... FOR UPDATE` untuk mencegah race condition.
+
+**Response `200`:**
+```json
+{ "success": true, "message": "Order berhasil dibuat.", "data": { ... } }
+```
+
+**Response `422` (stok tidak cukup):**
+```json
+{ "success": false, "message": "Stok produk \"Laptop ASUS VivoBook 14\" tidak mencukupi" }
+```
+
+**Response `422` (status tidak valid):**
+```json
+{ "success": false, "message": "Hanya order berstatus Draft yang dapat dilanjutkan." }
+```
+
+---
+
+#### `PATCH /api/orders/{id}/cancel`
+Cancel order dari status **Submitted** → **Cancelled**.
+
+> Stok dikembalikan. Juga dibungkus dalam database transaction.
+
+**Response `200`:**
+```json
+{ "success": true, "message": "Order berhasil dibatalkan. Stok produk telah dikembalikan.", "data": { ... } }
+```
+
+**Response `422`:**
+```json
+{ "success": false, "message": "Hanya order berstatus Submitted yang dapat dibatalkan." }
+```
+
+---
+
+### General Error Responses
+
+| HTTP Code | Kondisi                              |
+|-----------|--------------------------------------|
+| 401       | Token tidak ada / expired            |
+| 404       | Resource tidak ditemukan             |
+| 422       | Validasi gagal / business rule error |
+| 500       | Internal server error                |
+
+---
+
 ## Desain Aplikasi
 - API memungkinkan _user_ menggunakan aplikasi dengan metode _multi-session_ yang artinya _user_ dapat _login_ dibeberapa perangkat sekaligus dengan _session_ yang berbeda dan punya _session expiration_-nya masing-masing.
 - Backend tidak menyimpan _session token_ (JWT). Setiap _request_ yang diterima akan divalidasi dengan _verification signature_ menggunakan `JWT_SECRET` yang ada pada `.env`
