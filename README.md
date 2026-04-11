@@ -242,3 +242,4 @@ Cancel order dari status **Submitted** → **Cancelled**.
     - Response - /app/Http/Resources
   - Controller - /app/Http/Controllers/Api
   - Services, _bussiness logic_ - /app/Services
+- Submit dan cancel order menggunakan `DB::transaction()` dengan `SELECT ... FOR UPDATE` (`lockForUpdate()`). Ini memastikan bahwa dalam kondisi concurrent requests (misalnya dua sales submit order untuk produk yang sama secara bersamaan), database-level lock akan mencegah race condition dan over-selling.
