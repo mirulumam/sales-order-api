@@ -31,6 +31,7 @@ class OrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $orders = Order::with(['customer', 'creator'])
+            // ->where('created_by', auth()->id()) // Filter order by authenticated user
             ->when($request->status, function ($q, $s) {
                 $status = Order::STATUS_MAP[$s] ?? null;
                 $q->where('status', $status);
