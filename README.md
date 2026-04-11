@@ -1,6 +1,6 @@
 ## Cara Install
 ### Prasyarat
-- PHP >= 8.2 dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`
+- PHP >= 8.4 dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`
 - Composer >= 2
 - MySQL 8+ atau MariaDB 10.6+
 
@@ -119,10 +119,11 @@ Detail satu customer.
 Daftar order dengan pagination.
 
 **Query Params:**
-| Param    | Type                           | Default | Keterangan              |
-|----------|--------------------------------|---------|-------------------------|
-| per_page | int                            | 15      | Jumlah item per halaman |
-| status   | 1 / 2 / 3                      | –       | Filter by status        |
+| Param    | Type      | Default | Keterangan              |
+|----------|-----------|---------|-------------------------|
+| per_page | int       | 15      | Jumlah item per halaman |
+| status   | 1 / 2 / 3 | –       | Filter by status        |
+
 1. Draft
 2. Submitted
 3. Cancelled
