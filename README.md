@@ -66,8 +66,34 @@ Login dan dapatkan Bearer token.
 #### `POST /api/auth/logout`
 Logout.
 
+**Response `200`:**
+```json
+{ "success": true, "message": "Logout berhasil." }
+```
+
 #### `GET /api/auth/profile`
 Menampilkan data user yang sedang login.
+
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 2,
+        "username": "sales01",
+        "role": "user",
+        "created_at": "2026-04-12T04:36:21+00:00"
+    }
+}
+```
+
+**Response `401`:**
+```json
+{
+    "success": false,
+    "message": "Unauthenticated. Silakan login terlebih dahulu."
+}
+```
 
 ---
 
@@ -96,6 +122,20 @@ Daftar produk dengan pagination.
 #### `GET /api/products/{id}`
 Detail satu produk.
 
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 5,
+        "name": "Headset Sony WH-1000XM5",
+        "price": 4500000,
+        "stock": 30,
+        "created_at": "2026-04-12T04:36:21+00:00"
+    }
+}
+```
+
 ---
 
 ### Customers
@@ -109,8 +149,51 @@ Daftar customer dengan pagination.
 | per_page | int    | 15      | Jumlah item per halaman          |
 | search   | string | –       | Filter nama atau nomor telepon   |
 
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 3,
+            "name": "Budi Santoso",
+            "phone": "08113456789",
+            "address": "Jl. Kebon Jeruk No. 7, Jakarta Barat",
+            "created_at": "2026-04-12T04:36:21+00:00"
+        },
+        {
+            "id": 2,
+            "name": "CV Teknologi Nusantara",
+            "phone": "02287654321",
+            "address": "Jl. Gatot Subroto No. 12, Jakarta Selatan",
+            "created_at": "2026-04-12T04:36:21+00:00"
+        }
+    ],
+    "meta": {
+        "current_page": 1,
+        "last_page": 1,
+        "per_page": 10,
+        "total": 5
+    }
+}
+```
+
 #### `GET /api/customers/{id}`
 Detail satu customer.
+
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 5,
+        "name": "PT Solusi Digital",
+        "phone": "02155566677",
+        "address": "Gedung Menara BCA Lt. 30, Jakarta Pusat",
+        "created_at": "2026-04-12T04:36:21+00:00"
+    }
+}
+```
 
 ---
 
@@ -129,8 +212,96 @@ Daftar order dengan pagination.
 2. Submitted
 3. Cancelled
 
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "order_no": "ORD-20260412-0001",
+            "status": "Draft",
+            "total_amount": 9450000,
+            "customer": {
+                "id": 5,
+                "name": "PT Solusi Digital",
+                "phone": "02155566677",
+                "address": "Gedung Menara BCA Lt. 30, Jakarta Pusat",
+                "created_at": "2026-04-12T04:36:21+00:00"
+            },
+            "created_by": {
+                "id": 2,
+                "username": "sales01"
+            },
+            "created_at": "2026-04-12T05:47:58+00:00",
+            "updated_at": "2026-04-12T05:47:58+00:00"
+        }
+    ],
+    "meta": {
+        "current_page": 1,
+        "last_page": 1,
+        "per_page": 10,
+        "total": 1
+    }
+}
+```
+
 #### `GET /api/orders/{id}`
 Detail order beserta seluruh item dan info produk.
+
+**Response `200`:**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "order_no": "ORD-20260412-0001",
+        "status": "Draft",
+        "total_amount": 9450000,
+        "customer": {
+            "id": 5,
+            "name": "PT Solusi Digital",
+            "phone": "02155566677",
+            "address": "Gedung Menara BCA Lt. 30, Jakarta Pusat",
+            "created_at": "2026-04-12T04:36:21+00:00"
+        },
+        "created_by": {
+            "id": 2,
+            "username": "sales01"
+        },
+        "items": [
+            {
+                "id": 1,
+                "product": {
+                    "id": 5,
+                    "name": "Headset Sony WH-1000XM5",
+                    "price": 4500000,
+                    "stock": 30,
+                    "created_at": "2026-04-12T04:36:21+00:00"
+                },
+                "qty": 2,
+                "price": 4500000,
+                "subtotal": 9000000
+            },
+            {
+                "id": 2,
+                "product": {
+                    "id": 3,
+                    "name": "Keyboard Mechanical RK61",
+                    "price": 450000,
+                    "stock": 50,
+                    "created_at": "2026-04-12T04:36:21+00:00"
+                },
+                "qty": 1,
+                "price": 450000,
+                "subtotal": 450000
+            }
+        ],
+        "created_at": "2026-04-12T05:47:58+00:00",
+        "updated_at": "2026-04-12T05:47:58+00:00"
+    }
+}
+```
 
 ---
 
