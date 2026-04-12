@@ -7,7 +7,7 @@
 ### Instalasi
 - Clone: `https://github.com/mirulumam/sales-order-api.git`
 - Buka terminal, arahkan active directory ke folder repo di atas
-- Instal dependencies composer: `composer install`
+- Instal dependencies composer: `composer update`
 - Salin atau _rename_ file `.env.example` ke `.env`
 - Sesuaikan konfigurasi databse di file `.env`:
   - DB_CONNECTION=\<db_type>
