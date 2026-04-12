@@ -17,6 +17,7 @@
   - DB_USERNAME=\<db_user>
   - DB_PASSWORD=\<db_password>
 - Generate _app key_: `php artisan key:generate`
+- Generate JWT Secret: `php artisan jwt:secret`
 - Jalankan migrasi: `php artisan migrate`
 - Jalankan seeder (untuk mengisi data ke db): `php artisan db:seed`
 
